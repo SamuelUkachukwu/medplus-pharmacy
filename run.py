@@ -1,6 +1,7 @@
 import gspread
 from google.oauth2.service_account import Credentials
-# from pprint import pprint
+import random
+from pprint import pprint
 
 
 SCOPE = [
@@ -27,7 +28,7 @@ def collect_user_input():
             patients_list = SHEET.worksheet('patients').col_values(1)
             if str(f"MP{patient_id}") in patients_list:
                 print('Patient account found')
-                print('Retriving Drug History...')
+                print("Retrieving Patient's Drug History...")
                 patient_drug_history()
             else:
                 print(f"An account could not be found for the provided Patient ID: {patient_id}")
@@ -54,20 +55,60 @@ def validate_patient_id(values):
             raise ValueError(
             f"Last three digits is required, you entered {len(values)}"
             )
-    except ValueError as e:
-        print(f"invalid patient Id {e}, please try again")
+    except ValueError as error:
+        print(f"invalid patient Id {error}, please try again")
         return False
     return True
-
 
 
 def create_new_patient_account():
     """
     function to create new patient account
     """
-    print('we are here now')
+    new_patient = []
+    new_sheet_header = ['Date', 'Medication', 'Brand Name', 'Prescribed for', 'Dosage', 'Dosing Frequency',	'Special Notes']
+    new_patient_id = create_new_patient_id()
+    new_patient.append(new_patient_id)
+    fname = input("Enter Your First Name\n")
+    new_patient.append(fname)
+    lname = input("Enter Your Last Name:\n")
+    new_patient.append(lname)
+    SHEET.worksheet('patients').append_row(new_patient)
+    print(new_patient)
+    SHEET.add_worksheet(title=f"{new_patient_id}", rows=100, cols=20)
+    SHEET.worksheet(f"{new_patient_id}").append_row(new_sheet_header)
+
+# worksheet = SHEET.add_worksheet(title="007", rows=100, cols=20)
+
+#     patients_list = SHEET.worksheet('patients').col_values(1)
+#     new_patient = list(patients_list[-1][-3:])
+#     print(new_patient[2])
 
 
+def create_new_patient_id():
+    """
+    function to create new patient id
+    """
+    patients_list = SHEET.worksheet('patients').col_values(1)
+    while True:
+        for new_num in range(1, 200):
+            if str(f"MP{new_num:03}") in patients_list:
+                continue
+            else:
+                patient_id = str(f"MP{new_num:03}")
+                return patient_id
+        break
+
+
+# create_new_patient_id()
+# patients_list = SHEET.worksheet('patients').col_values(1)
+# patients_list.append('MP004')
+# print((patients_list))
+# new = [1,2,2,2,3,4]
+# SHEET.worksheet('patients').append_row(patients_list)
+# SHEET.worksheet('patients').append_row(new)
+
+# print(new)
 def patient_drug_history():
     """
     patient drug history data retrived from worksheet
@@ -75,8 +116,7 @@ def patient_drug_history():
     print('this is the drug history')
 
 
-
-print('Welcome To Medplus Pharmacy "Serving with care"\n')
+print('Welcome To Medplus Pharmacy "Your health, Our care"\n')
 collect_user_input()
 
 # class Patient():
