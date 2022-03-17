@@ -1,6 +1,6 @@
 import gspread
 from google.oauth2.service_account import Credentials
-from pprint import pprint
+# from pprint import pprint
 
 
 SCOPE = [
@@ -14,42 +14,32 @@ SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('medplus_pharmacy')
 
-patient = SHEET.worksheet('MP001')
-data = patient.get_all_values()
-print(data)
-# 
-# worksheet = SHEET.add_worksheet(title="007", rows=100, cols=20)
-print(SHEET.worksheet('patients').get('B'))
-
-# worksheet_list = SHEET.worksheets()
-# print(worksheet_list)
-
-# worksheet = SHEET.worksheet('007')
-# SHEET.del_worksheet(worksheet)
-
-# worksheet_list = SHEET.worksheets()
-# print(worksheet_list)
-patient_id_data = SHEET.worksheet('patients')
-patient_list = []
-for ind in range(1, 10):
-    column = patient_id_data.col_values(ind)
-    print(column)
 
 def collect_user_input():
     """
     Captures user input of Patients ID
     """
     while True:
-        print(f"Please enter last three digit of Patient ID")
-        print(f"ID eg: 001\n")
+        print(f"Please enter the last three digits of the Patient ID")
+        print(f"Patient ID eg: 000\n")
         patient_id = input("Patient ID:")
-        # patient_id = list(patient)
-        # print(patient_id[-3:])
         if validate_patient_id(patient_id):
-            print("Patient ID is Correct")
-            print(f"Retriving file No:{patient_id}")
+            patients_list = SHEET.worksheet('patients').col_values(1)
+            if str(f"MP{patient_id}") in patients_list:
+                print('Patient account found')
+                print('Retriving Drug History...')
+                patient_drug_history()
+            else:
+                print(f"An account could not be found for the provided Patient ID: {patient_id}")
+                new_patient = input("Do You want to create a new account? Y/N :").lower()
+                if new_patient == 'y':
+                    create_new_patient_account()
+                elif new_patient == 'n':
+                    collect_user_input()
+                else:
+                    print('Invalid Answer')
+                    collect_user_input()
             break
-        print(patient_id)   
 
 
 def validate_patient_id(values):
@@ -69,7 +59,26 @@ def validate_patient_id(values):
         return False
     return True
 
+
+
+def create_new_patient_account():
+    """
+    function to create new patient account
+    """
+    print('we are here now')
+
+
+def patient_drug_history():
+    """
+    patient drug history data retrived from worksheet
+    """
+    print('this is the drug history')
+
+
+
+print('Welcome To Medplus Pharmacy "Serving with care"\n')
 collect_user_input()
+
 # class Patient():
 #     """
 #     Create an instance of patient
