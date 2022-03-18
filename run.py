@@ -28,14 +28,12 @@ def collect_user_input():
             if str(f"MP{patient_id}") in patients_list:
                 print('Patient account found')
                 print("Retrieving Patient's Drug History...")
-                patient_drug_history(patient_id)
+                patient_drug_history(f"MP{patient_id}")
             else:
-                print(
-                    f"An account does not exist for the provided ID:{patient_id}"
-                    )
+                print(f"An account does not exist for the provided ID:{patient_id}")
                 new_patient = input("Create a new account? Y/N :").lower()
                 if new_patient == 'y':
-                    create_new_patient_account()
+                    create_new_patient()
                 elif new_patient == 'n':
                     collect_user_input()
                 else:
@@ -62,26 +60,11 @@ def validate_patient_id(values):
     return True
 
 
-def create_new_patient_account():
+def create_new_patient():
+    """.git/
     """
-    function to create new patient account
-    """
-    new_patient = []
-    new_sheet_header = [
-        'Date', 'Medication', 'Brand Name',
-        'Prescribed for', 'Dosage',
-        'Dosing Frequency', 'Special Notes'
-        ]
-    new_patient_id = create_new_patient_id()
-    new_patient.append(new_patient_id)
-    fname = input("Enter Your First Name\n").capitalize()
-    new_patient.append(fname)
-    lname = input("Enter Your Last Name:\n").capitalize()
-    new_patient.append(lname)
-    SHEET.worksheet('patients').append_row(new_patient)
-    SHEET.add_worksheet(title=f"{new_patient_id}", rows=100, cols=20)
-    SHEET.worksheet(f"{new_patient_id}").append_row(new_sheet_header)
-    patient_drug_history()
+    patient_id = create_new_patient_id()
+    create_new_patient_account(patient_id)
 
 
 def create_new_patient_id():
@@ -94,21 +77,43 @@ def create_new_patient_id():
             if str(f"MP{new_num:03}") in patients_list:
                 continue
             else:
-                patient_id = str(f"MP{new_num:03}")
+                patient_id = str(f"{new_num:03}")
                 return patient_id
         break
 
 
-def patient_drug_history(patient_id):
+def create_new_patient_account(data):
+    """
+    function to create new patient account
+    """
+    new_patient = []
+    new_sheet_header = [
+        'Date', 'Medication', 'Brand Name',
+        'Prescribed for', 'Dosage',
+        'Dosing Frequency', 'Special Notes'
+        ]
+    new_patient_id = f"MP{data}"
+    new_patient.append(new_patient_id)
+    fname = input("Enter Your First Name\n").capitalize()
+    new_patient.append(fname)
+    lname = input("Enter Your Last Name:\n").capitalize()
+    new_patient.append(lname)
+    SHEET.worksheet('patients').append_row(new_patient)
+    SHEET.add_worksheet(title=f"{new_patient_id}", rows=100, cols=20)
+    SHEET.worksheet(f"{new_patient_id}").append_row(new_sheet_header)
+    patient_drug_history(new_patient_id)
+
+
+def patient_drug_history(data):
     """
     patient drug history data retrived from worksheet
     """
     print('Patient Drug History Retrieved\n')
     patients_list = SHEET.worksheet('patients').col_values(1)
-    index = patients_list.index(f"MP{patient_id}")
+    index = patients_list.index(data)
     patient_details = SHEET.worksheet("patients").row_values(int(index)+1)
     print(f" Name: {patient_details[1]} {patient_details[2]}\n Patient ID: {patient_details[0]}")
-    
+
 
 print('Welcome To Medplus Pharmacy "Your health, Our care"\n')
 collect_user_input()
