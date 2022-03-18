@@ -1,6 +1,7 @@
 import gspread
 from google.oauth2.service_account import Credentials
-# from pprint import pprint
+import datetime
+from pprint import pprint
 
 
 SCOPE = [
@@ -77,7 +78,7 @@ def create_new_patient_id():
     """
     patients_list = SHEET.worksheet('patients').col_values(1)
     while True:
-        for new_num in range(1, 200):
+        for new_num in range(1, 199):
             if str(f"MP{new_num:03}") in patients_list:
                 continue
             else:
@@ -121,11 +122,9 @@ def patient_drug_history(data):
     patient = SHEET.worksheet("patients").row_values(int(index)+1)
     print(f" Name: {patient[1]} {patient[2]}\n Patient ID: {patient[0]}")
     history = SHEET.worksheet(f"{patient[0]}").get_all_values()
-    # print(history[0])
-    # print(history[-1])
+
     if history[0] == history[-1]:
         print("\nPatient has no recorded history")
-        enter_drug_history()
     else:
         print(f"\nDate: {history[-1][0]}")
         print(f"Medication: {history[-1][1]}")
@@ -133,27 +132,37 @@ def patient_drug_history(data):
         print(f"Dosage: {history[-1][3]}")
         print(f"Dosing frequency: {history[-1][4]}")
         print(f"Notes: {history[-1][5]}\n")
-        enter_drug_history()
+    while True:
+        request = input("Enter new details? Y/N :").lower()
+        if request == 'y':
+            enter_drug_history(f"{patient[0]}")
+            break
+        elif request == 'n':
+            print('ok')
+            break
 
 
-def enter_drug_history():
+def enter_drug_history(data):
     """
-    accept user input and append it to worksheet
+    new drug information is added to patients worksheet
     """
-    request = input("Enter new details? Y/N :")
-    print("Hello You Are Here Now.")
-    print(request)
+    new_med = []
+    date = datetime.datetime.now()
+    date1 = date.strftime("%x")
+    medication = input("Medication: ")
+    reason = input("Prescribed For: ")
+    dosage = input("Dosage: ")
+    dose_frq = input("Dose Frequency: ")
+    notes = input("Special Notes: ")
+    new_med.extend([date1, medication, reason, dosage, dose_frq, notes])
+    pprint(new_med)
+    history = SHEET.worksheet(data).get_all_values()
 
-
-
-
-    # if new_patient == 'y':
-    #                 create_new_patient()
-    #             elif new_patient == 'n':
-    #                 collect_user_input()
-    #             else:
-    #                 print('Invalid Answer')
-    #                 collect_user_input()
 
 print('Welcome To Medplus Pharmacy "Your health, Our care"\n')
 collect_user_input()
+
+
+# x = datetime.datetime.now()
+
+# print(x.strftime("%x"))
