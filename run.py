@@ -23,8 +23,8 @@ def collect_user_input():
     Calls for new account creation
     """
     while True:
-        print(f"Please enter the last three digits of the Patient ID")
-        print(f"Patient ID eg: 000\n")
+        print("Please enter the last three digits of the Patient ID")
+        print("Patient ID eg: 000\n")
         patient_id = input("Patient ID:")
         if validate_patient_id(patient_id):
             patients_list = SHEET.worksheet('patients').col_values(1)
@@ -32,7 +32,7 @@ def collect_user_input():
                 print('Patient account found\n')
                 patient_drug_history(f"MP{patient_id}")
             else:
-                print(f"An account does not exist for the provided ID:{patient_id}")
+                print(f"No account found for the provided ID:{patient_id}")
                 new_patient = input("Create a new account? Y/N :").lower()
                 if new_patient == 'y':
                     create_new_patient()
@@ -56,8 +56,8 @@ def validate_patient_id(values):
             raise ValueError(
                 f"Last three digits is required, you entered {len(values)}"
                 )
-    except ValueError as error:
-        print(f"invalid patient Id {error}, please try again")
+    except ValueError:
+        print("Invalid Patient ID, Please Try Again")
         return False
     return True
 
@@ -149,20 +149,14 @@ def enter_drug_history(data):
     new_med = []
     date = datetime.datetime.now()
     date1 = date.strftime("%x")
-    medication = input("Medication: ")
+    medication = input("Medication: ").capitalize()
     reason = input("Prescribed For: ")
     dosage = input("Dosage: ")
     dose_frq = input("Dose Frequency: ")
     notes = input("Special Notes: ")
     new_med.extend([date1, medication, reason, dosage, dose_frq, notes])
-    pprint(new_med)
-    history = SHEET.worksheet(data).get_all_values()
+    SHEET.worksheet(data).append_row(new_med)
 
 
 print('Welcome To Medplus Pharmacy "Your health, Our care"\n')
 collect_user_input()
-
-
-# x = datetime.datetime.now()
-
-# print(x.strftime("%x"))
