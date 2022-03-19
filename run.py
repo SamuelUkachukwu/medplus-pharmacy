@@ -1,8 +1,7 @@
+import datetime
+from datetime import date
 import gspread
 from google.oauth2.service_account import Credentials
-import datetime
-from pprint import pprint
-from datetime import date
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -98,14 +97,19 @@ def create_new_patient_account(data):
         'Quantity Dispensed(tabs)', 'Special Notes'
         ]
     new_patient_id = f"MP{data}"
-    new_patient.append(new_patient_id)
     fname = input("Enter Your First Name\n").capitalize()
-    new_patient.append(fname)
     lname = input("Enter Your Last Name:\n").capitalize()
-    new_patient.append(lname)
-    
-
-
+    while True:
+        try:
+            age = int(input("Enter Age: "))
+            if len(str(age)) <= 3 and age < 100:
+                break
+            else:
+                print("Please Enter Required Age")
+        except ValueError:
+            print("Values have to be integers.")
+    yob = date.today().year - age
+    new_patient.extend([new_patient_id, fname, lname, yob])
     SHEET.worksheet('patients').append_row(new_patient)
     SHEET.add_worksheet(title=f"{new_patient_id}", rows=100, cols=20)
     SHEET.worksheet(f"{new_patient_id}").append_row(new_sheet_header)
@@ -136,6 +140,7 @@ def patient_drug_history(data):
         print(f"Dosing frequency: {history[-1][3]}")
         print(f"Quantity Dispensed: {history[-1][4]}")
         print(f"Notes: {history[-1][5]}\n")
+
     while True:
         request = input("Enter new details? Y/N :").lower()
         if request == 'y':
@@ -145,8 +150,6 @@ def patient_drug_history(data):
             print('ok')
             break
 
-
-# patient_drug_history('MP002')
 
 def enter_drug_history(data):
     """
@@ -180,17 +183,6 @@ def enter_drug_history(data):
     print(new_med)
     SHEET.worksheet(data).append_row(new_med)
 
-# enter_drug_history('MP002')
+
 print('Welcome To Medplus Pharmacy "Your health, Our care"\n')
 main()
-
-# today = date.today()
-# d = today.year
-# print(type(d))
-# print(d)
-# age = 40
-# print(type(age))
-# dob = d - age
-# print(dob)
-# j = date.today().year
-# print(type(j))
