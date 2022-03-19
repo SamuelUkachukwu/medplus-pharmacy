@@ -2,7 +2,7 @@ import gspread
 from google.oauth2.service_account import Credentials
 import datetime
 from pprint import pprint
-
+from datetime import date
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -16,7 +16,7 @@ GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('medplus_pharmacy')
 
 
-def collect_user_input():
+def main():
     """
     Captures user input of Patients ID
     request input validation
@@ -37,10 +37,10 @@ def collect_user_input():
                 if new_patient == 'y':
                     create_new_patient()
                 elif new_patient == 'n':
-                    collect_user_input()
+                    main()
                 else:
                     print('Invalid Answer')
-                    collect_user_input()
+                    main()
             break
 
 
@@ -94,9 +94,8 @@ def create_new_patient_account(data):
     """
     new_patient = []
     new_sheet_header = [
-        'Date', 'Medication',
-        'Prescribed for', 'Dosage',
-        'Dosing Frequency', 'Special Notes'
+        'Date', 'Medication', 'Dosage', 'Dosing Frequency', 
+        'Quantity Dispensed(tabs)', 'Special Notes'
         ]
     new_patient_id = f"MP{data}"
     new_patient.append(new_patient_id)
@@ -104,6 +103,9 @@ def create_new_patient_account(data):
     new_patient.append(fname)
     lname = input("Enter Your Last Name:\n").capitalize()
     new_patient.append(lname)
+    
+
+
     SHEET.worksheet('patients').append_row(new_patient)
     SHEET.add_worksheet(title=f"{new_patient_id}", rows=100, cols=20)
     SHEET.worksheet(f"{new_patient_id}").append_row(new_sheet_header)
@@ -120,7 +122,9 @@ def patient_drug_history(data):
     patients_list = SHEET.worksheet('patients').col_values(1)
     index = patients_list.index(data)
     patient = SHEET.worksheet("patients").row_values(int(index)+1)
-    print(f" Name: {patient[1]} {patient[2]}\n Patient ID: {patient[0]}")
+    print(f" Name: {patient[1]} {patient[2]}")
+    print(f" Age: {date.today().year - int(patient[3])}")
+    print(f" Patient ID: {patient[0]}\n")
     history = SHEET.worksheet(f"{patient[0]}").get_all_values()
 
     if history[0] == history[-1]:
@@ -128,9 +132,9 @@ def patient_drug_history(data):
     else:
         print(f"\nDate: {history[-1][0]}")
         print(f"Medication: {history[-1][1]}")
-        print(f"Prescribed for: {history[-1][2]}")
-        print(f"Dosage: {history[-1][3]}")
-        print(f"Dosing frequency: {history[-1][4]}")
+        print(f"Dosage: {history[-1][2]}")
+        print(f"Dosing frequency: {history[-1][3]}")
+        print(f"Quantity Dispensed: {history[-1][4]}")
         print(f"Notes: {history[-1][5]}\n")
     while True:
         request = input("Enter new details? Y/N :").lower()
@@ -142,21 +146,51 @@ def patient_drug_history(data):
             break
 
 
+# patient_drug_history('MP002')
+
 def enter_drug_history(data):
     """
     new drug information is added to patients worksheet
     """
     new_med = []
-    date = datetime.datetime.now()
-    date1 = date.strftime("%x")
-    medication = input("Medication: ").capitalize()
-    reason = input("Prescribed For: ")
-    dosage = input("Dosage: ")
-    dose_frq = input("Dose Frequency: ")
+    today = datetime.datetime.now()
+    date1 = today.strftime("%x")
+    print(f"Date: {date1}")
+    medication = "Zidovudine (AZT)"
+    print(f"Medication: {medication}")
+    print("Enter Dosage as 250 or 300")
+    while True:
+        dosage = str(input("Dosage: "))
+        if dosage == '300':
+            break
+        elif dosage == '250':
+            break
+        else:
+            print("Enter Dosage as 250 or 300 only")
+    while True:
+        try:
+            dose_frq = int(input("Number of Tablets per Day:"))
+            duration = int(input("For How Many Days: "))
+            quantity = (dose_frq * duration)
+            break
+        except ValueError:
+            print("Both values have to be integers.")
     notes = input("Special Notes: ")
-    new_med.extend([date1, medication, reason, dosage, dose_frq, notes])
+    new_med.extend([date1, medication, f"{dosage}mg", f"{dose_frq} times daily", quantity, notes])
+    print(new_med)
     SHEET.worksheet(data).append_row(new_med)
 
-
+# enter_drug_history('MP002')
 print('Welcome To Medplus Pharmacy "Your health, Our care"\n')
-collect_user_input()
+main()
+
+# today = date.today()
+# d = today.year
+# print(type(d))
+# print(d)
+# age = 40
+# print(type(age))
+# dob = d - age
+# print(dob)
+# j = date.today().year
+# print(type(j))
