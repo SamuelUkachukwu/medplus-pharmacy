@@ -1,6 +1,6 @@
 import datetime
-from datetime import datetime
-# from datetime import date
+# from datetime import datetime
+from datetime import date
 import gspread
 from google.oauth2.service_account import Credentials
 
@@ -94,7 +94,8 @@ def create_new_patient_account(data):
     """
     new_patient = []
     new_sheet_header = [
-        'Date', 'Medication', 'Dosage', 'Dosing Frequency', 
+        'Date', 'Medication', 'Dosage',
+        'Dosing Frequency', 'Duration',
         'Quantity Dispensed(tabs)', 'Special Notes'
         ]
     new_patient_id = f"MP{data}"
@@ -139,8 +140,9 @@ def patient_drug_history(data):
         print(f"Medication: {history[-1][1]}")
         print(f"Dosage: {history[-1][2]}")
         print(f"Dosing frequency: {history[-1][3]}")
-        print(f"Quantity Dispensed: {history[-1][4]}")
-        print(f"Notes: {history[-1][5]}\n")
+        print(f"Quantity Dispensed: {history[-1][5]}")
+        print(f"Notes: {history[-1][6]}\n")
+        patient_next_visit(history[-1][0], history[-1][4], f"{patient[0]}")
 
     while True:
         request = input("Enter new details? Y/N :").lower()
@@ -150,6 +152,18 @@ def patient_drug_history(data):
         elif request == 'n':
             print('ok')
             break
+
+
+def patient_next_visit(value1, value2, value3):
+    """
+    calculates patients next visit
+    """
+    value1 = datetime.datetime.strptime(value1, "%m/%d/%y")
+    next_visit = value1 + datetime.timedelta(days=int(value2))
+    print(f"Patients Next Visit is {next_visit}")
+
+
+# patient_next_visit('03/19/22', '30')
 
 
 def enter_drug_history(data):
@@ -180,10 +194,17 @@ def enter_drug_history(data):
         except ValueError:
             print("Both values have to be integers.")
     notes = input("Special Notes: ")
-    new_med.extend([date1, medication, f"{dosage}mg", f"{dose_frq} times daily", quantity, notes])
+    new_med.extend([
+            date1, medication, f"{dosage}mg",
+            dose_frq, duration, quantity, notes
+            ])
     print(new_med)
     SHEET.worksheet(data).append_row(new_med)
 
 
-# print('Welcome To Medplus Pharmacy "Your health, Our care"\n')
-# main()
+print('Welcome To Medplus Pharmacy "Your health, Our care"\n')
+main()
+
+# x = datetime.now().strftime("%Y")
+
+# print(x)
