@@ -1,5 +1,6 @@
 import datetime
-from datetime import date
+from datetime import datetime
+# from datetime import date
 import gspread
 from google.oauth2.service_account import Credentials
 
@@ -184,5 +185,5 @@ def enter_drug_history(data):
     SHEET.worksheet(data).append_row(new_med)
 
 
-print('Welcome To Medplus Pharmacy "Your health, Our care"\n')
-main()
+# print('Welcome To Medplus Pharmacy "Your health, Our care"\n')
+# main()
