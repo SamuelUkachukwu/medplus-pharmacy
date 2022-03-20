@@ -104,7 +104,7 @@ def create_new_patient_account(data):
     while True:
         try:
             age = int(input("Enter Age: "))
-            if len(str(age)) <= 3 and age < 100:
+            if len(str(age)) <= 3 and age < 110:
                 break
             else:
                 print("Please Enter Required Age")
@@ -134,7 +134,7 @@ def patient_drug_history(data):
     history = SHEET.worksheet(f"{patient[0]}").get_all_values()
 
     if history[0] == history[-1]:
-        print("\nPatient has no recorded history")
+        print("\nPatient has no recorded history\n")
     else:
         print(f"\nDate: {history[-1][0]}")
         print(f"Medication: {history[-1][1]}")
@@ -142,7 +142,7 @@ def patient_drug_history(data):
         print(f"Dosing frequency: {history[-1][3]}")
         print(f"Quantity Dispensed: {history[-1][5]}")
         print(f"Notes: {history[-1][6]}\n")
-        patient_next_visit(history[-1][0], history[-1][4], f"{patient[0]}")
+        patient_next_visit(history[-1][0], history[-1][4])
 
     while True:
         request = input("Enter new details? Y/N :").lower()
@@ -150,11 +150,11 @@ def patient_drug_history(data):
             enter_drug_history(f"{patient[0]}")
             break
         elif request == 'n':
-            print('ok')
+            print("\nMedplus Pharmacy Your health, Our care")
             break
 
 
-def patient_next_visit(value1, value2, value3):
+def patient_next_visit(value1, value2):
     """
     calculates patients next visit
     """
@@ -163,17 +163,14 @@ def patient_next_visit(value1, value2, value3):
     print(f"Patients Next Visit is {next_visit}")
 
 
-# patient_next_visit('03/19/22', '30')
-
-
-def enter_drug_history(data):
+def enter_drug_history(patient_id):
     """
     new drug information is added to patients worksheet
     """
     new_med = []
     today = datetime.datetime.now()
     date1 = today.strftime("%x")
-    print(f"Date: {date1}")
+    print(f"\nDate: {date1}")
     medication = "Zidovudine (AZT)"
     print(f"Medication: {medication}")
     print("Enter Dosage as 250 or 300")
@@ -198,13 +195,13 @@ def enter_drug_history(data):
             date1, medication, f"{dosage}mg",
             dose_frq, duration, quantity, notes
             ])
-    print(new_med)
-    SHEET.worksheet(data).append_row(new_med)
+    SHEET.worksheet(patient_id).append_row(new_med)
+    print("\n Updating Patients Account...\n")
+    print(" Patients account Updated\n")
+    print(f" Dispense {quantity} tablets of Zidovudine(AZT) {dosage}mg.\n")
+    print(f" To be taken {dose_frq} times daily for {duration} days")
+    print("\nMedplus Pharmacy Your health, Our care")
 
 
 print('Welcome To Medplus Pharmacy "Your health, Our care"\n')
 main()
-
-# x = datetime.now().strftime("%Y")
-
-# print(x)
