@@ -42,6 +42,7 @@ def validate_patient_id():
     Validates user imput of patient ID
     """
     print("Please enter the last four digits of the Patient ID")
+    print("To Create New Account Enter Any Four Digit Number")
     print("Patient ID eg: 0000\n")
     while True:
         try:
