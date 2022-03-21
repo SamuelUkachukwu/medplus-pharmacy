@@ -1,5 +1,4 @@
 import datetime
-# from datetime import datetime
 from datetime import date
 import gspread
 from google.oauth2.service_account import Credentials
@@ -49,7 +48,10 @@ def validate_patient_id():
             acct_id = int(input("Patient ID:"))
             if [x for x in str(acct_id)]:
                 if len(str(acct_id)) != 4:
-                    print(f"Value requested is 4 you entered {len(str(acct_id))}")
+                    print(
+                        "Value requested is 4",
+                        f"you entered {len(str(acct_id))}"
+                        )
                     raise ValueError()
                 main(acct_id)
                 break
