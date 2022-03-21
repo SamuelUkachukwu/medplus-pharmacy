@@ -187,7 +187,7 @@ def enter_drug_history(patient_id):
             break
         except ValueError:
             print("Both values have to be integers.")
-    notes = input("Special Notes: \n")
+    notes = input("Special Notes: \n").lower()
     new_med.extend([
             date1, medication, f"{dosage}mg",
             dose_frq, duration, quantity, notes
