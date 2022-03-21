@@ -16,50 +16,45 @@ GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('medplus_pharmacy')
 
 
-def main():
+def main(value):
     """
-    Captures user input of Patients ID
-    request input validation
-    Calls for new account creation
+    main function
     """
-    while True:
-        print("Please enter the last three digits of the Patient ID")
-        print("Patient ID eg: 000\n")
-        patient_id = input("Patient ID:")
-        if validate_patient_id(patient_id):
-            patients_list = SHEET.worksheet('patients').col_values(1)
-            if str(f"MP{patient_id}") in patients_list:
-                print('Patient account found\n')
-                patient_drug_history(f"MP{patient_id}")
+    patients_list = SHEET.worksheet('patients').col_values(1)
+    if str(f"MP{value}") in patients_list:
+        print('Patient account found\n')
+        patient_drug_history(f"MP{value}")
+    else:
+        print(f"No account found for the provided ID:{value}")
+        while True:
+            new_patient = input("Create a new account? Y/N :").lower()
+            if new_patient == 'y':
+                create_new_patient()
+                break
+            elif new_patient == 'n':
+                print("\nMedplus Pharmacy Your health, Our care")
+                break
             else:
-                print(f"No account found for the provided ID:{patient_id}")
-                new_patient = input("Create a new account? Y/N :").lower()
-                if new_patient == 'y':
-                    create_new_patient()
-                elif new_patient == 'n':
-                    main()
-                else:
-                    print('Invalid Answer')
-                    main()
-            break
+                print('please enter Y or N')
 
 
-def validate_patient_id(values):
+def validate_patient_id():
     """
-    converts all values to intergers.
-    Raises ValueError if string cannot be converted into intergers
-    or the length of the value is not 3
+    Validates user imput of patient ID
     """
-    try:
-        [int(value) for value in values]
-        if len(values) != 3:
-            raise ValueError(
-                f"Last three digits is required, you entered {len(values)}"
-                )
-    except ValueError:
-        print("Invalid Patient ID, Please Try Again")
-        return False
-    return True
+    print("Please enter the last four digits of the Patient ID")
+    print("Patient ID eg: 0000\n")
+    while True:
+        try:
+            acct_id = int(input("Patient ID:"))
+            if [x for x in str(acct_id)]:
+                if len(str(acct_id)) != 4:
+                    print(f"Value requested is 4 you entered {len(str(acct_id))}")
+                    raise ValueError()
+                main(acct_id)
+                break
+        except ValueError:
+            print("Please Enter Last 4 digits of Patient ID")
 
 
 def create_new_patient():
@@ -79,7 +74,7 @@ def create_new_patient_id():
     patients_list = SHEET.worksheet('patients').col_values(1)
     while True:
         for new_num in range(1, 199):
-            if str(f"MP{new_num:03}") in patients_list:
+            if str(f"MP1{new_num:03}") in patients_list:
                 continue
             else:
                 patient_id = str(f"{new_num:03}")
@@ -98,9 +93,9 @@ def create_new_patient_account(data):
         'Dosing Frequency', 'Duration',
         'Quantity Dispensed(tabs)', 'Special Notes'
         ]
-    new_patient_id = f"MP{data}"
-    fname = input("Enter Your First Name\n").capitalize()
-    lname = input("Enter Your Last Name:\n").capitalize()
+    new_patient_id = f"MP1{data}"
+    fname = input("Enter Patients First Name\n").capitalize()
+    lname = input("Enter Patients Last Name:\n").capitalize()
     while True:
         try:
             age = int(input("Enter Age: "))
@@ -204,4 +199,4 @@ def enter_drug_history(patient_id):
 
 
 print('Welcome To Medplus Pharmacy "Your health, Our care"\n')
-main()
+validate_patient_id()
