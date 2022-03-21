@@ -26,7 +26,7 @@ def main(value):
     else:
         print(f"No account found for the provided ID:{value}")
         while True:
-            new_patient = input("Create a new account? Y/N :").lower()
+            new_patient = input("Create a new account? Y/N :\n").lower()
             if new_patient == 'y':
                 create_new_patient()
                 break
@@ -45,7 +45,7 @@ def validate_patient_id():
     print("Patient ID eg: 0000\n")
     while True:
         try:
-            acct_id = int(input("Patient ID:"))
+            acct_id = int(input("Patient ID:\n"))
             if [x for x in str(acct_id)]:
                 if len(str(acct_id)) != 4:
                     print(
@@ -100,7 +100,7 @@ def create_new_patient_account(data):
     lname = input("Enter Patients Last Name:\n").capitalize()
     while True:
         try:
-            age = int(input("Enter Age: "))
+            age = int(input("Enter Age: \n"))
             if len(str(age)) <= 3 and age < 110:
                 break
             else:
@@ -142,7 +142,7 @@ def patient_drug_history(data):
         patient_next_visit(history[-1][0], history[-1][4])
 
     while True:
-        request = input("Enter new details? Y/N :").lower()
+        request = input("Enter new details? Y/N :\n").lower()
         if request == 'y':
             enter_drug_history(f"{patient[0]}")
             break
@@ -172,7 +172,7 @@ def enter_drug_history(patient_id):
     print(f"Medication: {medication}")
     print("Enter Dosage as 250 or 300")
     while True:
-        dosage = str(input("Dosage: "))
+        dosage = str(input("Dosage: \n"))
         if dosage == '300':
             break
         elif dosage == '250':
@@ -181,13 +181,13 @@ def enter_drug_history(patient_id):
             print("Enter Dosage as 250 or 300 only")
     while True:
         try:
-            dose_frq = int(input("Number of Tablets per Day:"))
-            duration = int(input("For How Many Days: "))
+            dose_frq = int(input("Number of Tablets per Day:\n"))
+            duration = int(input("For How Many Days: \n"))
             quantity = (dose_frq * duration)
             break
         except ValueError:
             print("Both values have to be integers.")
-    notes = input("Special Notes: ")
+    notes = input("Special Notes: \n")
     new_med.extend([
             date1, medication, f"{dosage}mg",
             dose_frq, duration, quantity, notes
