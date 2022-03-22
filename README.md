@@ -4,7 +4,7 @@ Is an automated data processing app that assist the pharmacist or pharmacy techn
 
 In this project the app has been tailored to assist in dispensing and record keeping of the drug Zidovudine (AZT).
 
-Zidovudine (AZT) is and Antiretroviral drug used in the treatment of HIV/AIDS and prevention of mother-to-child transmission during child birth or in cases of needle stick injury.
+Zidovudine (AZT) is an Antiretroviral drug used in the treatment of HIV/AIDS and prevention of mother-to-child transmission during child birth or in cases of needle stick injury.
 
 Drug loss during dispensing can be caused by a lot of reasons and among them is the error from incorrect record keeping, scheduling of patients visit and incorrect dosing information to patients.
 The Medplus Pharmacy app seeks to solve these problems.
@@ -46,24 +46,28 @@ The app uses a google doc spreadsheet and google drive API to store and retrieve
 
 ### Testing
 I have tested the code by doing the following:
-Passing the codes through a pep8 linter and confirming it has no errors. ![pep8http://pep8online.com/checkresult
-Tested it in my Terminal and the Code Institute Heroku Terminal.
-Entered invalid inputs and wrong inputs where inputs are requested with respect to integers and strings. 
-Recruited help from friends to use app and offer feedback
-Bugs:
-Values on the special note were written in uppercase when I deployed the codes to Heroku this was fixed using the .lower() method.
-Add print statement to show how user can create a new account 
+* Passing the codes through a pep8 linter and confirming it has no errors. [pep8online check](pep8http://pep8online.com/checkresult)
+![pep8 testing result](assets/images/pep8onlie-validation.jpg)
+* Tested it in my Terminal and the Code Institute Heroku Terminal.
+* Entered invalid inputs and wrong inputs where inputs are requested with respect to integers and strings. 
+* Recruited help from friends to use app and offer feedback
+
+### Bugs:
+Values on the special note input were written in uppercase when I deployed the codes to Heroku this was fixed using the .lower() method. 
 
 ### Deployment
 The project was deployed to Heroku
 . steps
 1. create a Heroku account
 2.  in the settings section reveal the config var and enter the key and value from the creds.json file
-3. Add buildpack for python and nodejs respectively in the order the are listed 
+3. Add buildpack for python and nodejs respectively in the order the are listed here.
 4. In the deploy section select github and search for the repository name. link up the Heroku app to the github repository code.
-5. Scroll down and setup automatic deploy and click on the manual deploy option.
+5. Scroll down and setup automatic deploy to allow Heroku to update app from gitpod push and click on the manual deploy option.
+6. click view to view the app. 
+
+ View app here: [Medplus Pharmacy](https://medplus-pharmacy.herokuapp.com/)
 
 ### Credits 
-* Code Institute for the deployment terminal. [Code Institute](https://codeinstitute.net/ie/)
+* Code Institute for the deployment terminal [Code Institute](https://codeinstitute.net/ie/)
 * [Lucid App](https://lucid.app)
 * Ukachukwu Abimbola [@Nurse_Ukachukwu](https://twitter.com/nurse_ukachukwu) for external user testing.
